@@ -1,0 +1,470 @@
+:root {
+  --bg: #07111f;
+  --bg-soft: rgba(16, 30, 49, 0.78);
+  --panel: rgba(9, 19, 34, 0.88);
+  --panel-strong: rgba(12, 25, 43, 0.95);
+  --line: rgba(160, 208, 255, 0.18);
+  --text: #edf6ff;
+  --muted: #90a9c5;
+  --accent: #8af7d7;
+  --accent-strong: #43d6ff;
+  --danger: #ff6c7d;
+  --gold: #ffcb6b;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top, rgba(67, 214, 255, 0.16), transparent 32%),
+    radial-gradient(circle at bottom left, rgba(255, 108, 125, 0.16), transparent 24%),
+    linear-gradient(180deg, #07111f 0%, #030912 100%);
+  color: var(--text);
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+body {
+  padding: 20px;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr) 360px;
+  gap: 18px;
+  align-items: start;
+}
+
+.panel,
+.battle-stage {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+}
+
+.panel {
+  border-radius: 28px;
+  padding: 22px;
+}
+
+.panel--meta,
+.panel--inventory {
+  min-height: 760px;
+}
+
+.brand h1,
+.section-head h2,
+.overlay-card h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 0.04em;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 12px;
+}
+
+.subtitle,
+.selection-hint,
+.summary,
+.plain-list,
+.weapon-desc {
+  color: var(--muted);
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 22px 0;
+}
+
+.stat-card,
+.mission-card,
+.loadout-card,
+.meta-card,
+.weapon-book,
+.hud-block,
+.slot,
+.weapon-entry,
+.overlay-card {
+  border: 1px solid var(--line);
+  background: var(--panel-strong);
+}
+
+.stat-card {
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.stat-card span,
+.hud-block span,
+.weapon-meta,
+.slot-label {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+
+.stat-card strong,
+.hud-block strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 24px;
+}
+
+.mission-card,
+.loadout-card,
+.meta-card,
+.weapon-book {
+  border-radius: 20px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.plain-list {
+  padding-left: 18px;
+  margin: 12px 0 0;
+}
+
+.plain-list li + li {
+  margin-top: 8px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.ghost-button,
+.primary-button,
+.upgrade-button {
+  border: 0;
+  cursor: pointer;
+  transition: transform 120ms ease, opacity 120ms ease, box-shadow 120ms ease;
+}
+
+.ghost-button:hover,
+.primary-button:hover,
+.upgrade-button:hover {
+  transform: translateY(-1px);
+}
+
+.ghost-button {
+  border-radius: 999px;
+  background: rgba(138, 247, 215, 0.08);
+  color: var(--accent);
+  padding: 10px 14px;
+}
+
+.primary-button {
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  color: #02121d;
+  padding: 12px 20px;
+  font-weight: 700;
+  box-shadow: 0 12px 30px rgba(67, 214, 255, 0.22);
+}
+
+.battle-stage {
+  border-radius: 34px;
+  padding: 18px;
+}
+
+.hud,
+.battle-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.hud {
+  margin-bottom: 14px;
+}
+
+.hud-block {
+  flex: 1;
+  border-radius: 18px;
+  padding: 12px 14px;
+}
+
+#gameCanvas {
+  width: 100%;
+  height: auto;
+  border-radius: 26px;
+  border: 1px solid var(--line);
+  display: block;
+  touch-action: none;
+  background:
+    linear-gradient(180deg, rgba(11, 22, 38, 0.88), rgba(5, 10, 18, 0.96)),
+    radial-gradient(circle at center, rgba(67, 214, 255, 0.12), transparent 38%);
+}
+
+.battle-footer {
+  margin-top: 14px;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: var(--muted);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.dot--player {
+  background: var(--accent);
+}
+
+.dot--enemy {
+  background: var(--danger);
+}
+
+.dot--xp {
+  background: var(--gold);
+}
+
+.slot-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.slot-grid--loadout {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.slot-grid--inventory {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.slot {
+  min-height: 92px;
+  border-radius: 18px;
+  padding: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.slot.empty {
+  border-style: dashed;
+}
+
+.slot.selected {
+  outline: 2px solid var(--accent-strong);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.slot.can-merge::after {
+  content: "可合成";
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 11px;
+  color: var(--gold);
+}
+
+.slot-name {
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.slot-tags {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.rarity-common {
+  background: linear-gradient(180deg, rgba(141, 166, 196, 0.16), rgba(141, 166, 196, 0.08));
+}
+
+.rarity-rare {
+  background: linear-gradient(180deg, rgba(67, 214, 255, 0.18), rgba(67, 214, 255, 0.08));
+}
+
+.rarity-epic {
+  background: linear-gradient(180deg, rgba(255, 108, 125, 0.2), rgba(255, 108, 125, 0.08));
+}
+
+.weapon-book-grid,
+.research-grid,
+.upgrade-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.research-grid {
+  grid-template-columns: 1fr;
+}
+
+.weapon-entry {
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.research-entry {
+  border-radius: 18px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.research-entry h3,
+.research-entry p {
+  margin: 0;
+}
+
+.research-entry h3 {
+  font-size: 16px;
+}
+
+.research-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.research-row span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.small-button {
+  border: 1px solid rgba(138, 247, 215, 0.18);
+  background: rgba(138, 247, 215, 0.1);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.small-button:disabled,
+.primary-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.weapon-entry h3 {
+  margin: 6px 0;
+}
+
+.weapon-desc {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(1, 4, 9, 0.7);
+  backdrop-filter: blur(12px);
+  padding: 20px;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.overlay-card {
+  width: min(860px, 100%);
+  border-radius: 28px;
+  padding: 26px;
+  box-shadow: var(--shadow);
+}
+
+.overlay-card--gameover {
+  width: min(480px, 100%);
+  text-align: center;
+}
+
+.upgrade-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 20px;
+}
+
+.upgrade-button {
+  border-radius: 20px;
+  padding: 18px;
+  text-align: left;
+  background: linear-gradient(180deg, rgba(138, 247, 215, 0.1), rgba(67, 214, 255, 0.06));
+  color: var(--text);
+  border: 1px solid rgba(138, 247, 215, 0.16);
+}
+
+.upgrade-button strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+@media (max-width: 1420px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .panel--meta,
+  .panel--inventory {
+    min-height: unset;
+  }
+}
+
+@media (max-width: 720px) {
+  body {
+    padding: 12px;
+  }
+
+  .panel,
+  .battle-stage {
+    border-radius: 22px;
+    padding: 16px;
+  }
+
+  .stat-grid,
+  .upgrade-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .slot-grid--inventory {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hud,
+  .battle-footer,
+  .section-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

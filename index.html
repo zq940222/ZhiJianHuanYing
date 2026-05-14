@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>荒城幻影 - H5 原型</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="panel panel--meta">
+      <div class="brand">
+        <p class="eyebrow">H5 Survival Prototype</p>
+        <h1>荒城幻影</h1>
+        <p class="subtitle">背包管理 + 尸潮生存 + 自动射击</p>
+      </div>
+
+      <section class="stat-grid">
+        <article class="stat-card">
+          <span>波次</span>
+          <strong id="waveLabel">1</strong>
+        </article>
+        <article class="stat-card">
+          <span>生命</span>
+          <strong id="hpLabel">100 / 100</strong>
+        </article>
+        <article class="stat-card">
+          <span>经验</span>
+          <strong id="xpLabel">0 / 6</strong>
+        </article>
+        <article class="stat-card">
+          <span>废铁</span>
+          <strong id="scrapLabel">0</strong>
+        </article>
+        <article class="stat-card">
+          <span>晶核</span>
+          <strong id="alloyLabel">0</strong>
+        </article>
+        <article class="stat-card">
+          <span>流派加成</span>
+          <strong id="synergyLabel">无</strong>
+        </article>
+      </section>
+
+      <section class="mission-card">
+        <p class="mission-title">局内规则</p>
+        <ul class="plain-list">
+          <li>`WASD / 方向键` 移动</li>
+          <li>手机端按住战场区域拖动移动</li>
+          <li>自动锁定最近目标</li>
+          <li>相同武器卡可在背包中合成</li>
+          <li>每波结束可选一项强化</li>
+        </ul>
+      </section>
+
+      <section class="loadout-card">
+        <div class="section-head">
+          <h2>上阵武器</h2>
+          <button id="sortButton" class="ghost-button">整理背包</button>
+        </div>
+        <div id="loadoutGrid" class="slot-grid slot-grid--loadout"></div>
+      </section>
+
+      <section class="meta-card">
+        <div class="section-head">
+          <h2>局外研究</h2>
+          <span class="selection-hint">消耗晶核永久提升开局属性</span>
+        </div>
+        <div id="researchGrid" class="research-grid"></div>
+      </section>
+
+      <section class="meta-card">
+        <div class="section-head">
+          <h2>荒野补给</h2>
+          <button id="supplyButton" class="primary-button">开启补给箱</button>
+        </div>
+        <p id="supplyHint" class="summary">每次消耗 30 晶核，随机获得 1 张武器卡。</p>
+      </section>
+    </aside>
+
+    <main class="battle-stage">
+      <div class="hud">
+        <div class="hud-block">
+          <span>倒计时</span>
+          <strong id="timerLabel">25.0s</strong>
+        </div>
+        <div class="hud-block">
+          <span>击杀</span>
+          <strong id="killLabel">0</strong>
+        </div>
+        <div class="hud-block">
+          <span>最高波次</span>
+          <strong id="bestWaveLabel">1</strong>
+        </div>
+      </div>
+
+      <canvas id="gameCanvas" width="960" height="640" aria-label="游戏战斗画面"></canvas>
+
+      <div class="battle-footer">
+        <div class="legend">
+          <span class="dot dot--player"></span>幸存者
+          <span class="dot dot--enemy"></span>尸潮
+          <span class="dot dot--xp"></span>能量晶片
+        </div>
+        <button id="restartButton" class="primary-button">重新开始</button>
+      </div>
+    </main>
+
+    <aside class="panel panel--inventory">
+      <div class="section-head">
+        <h2>战术背包</h2>
+        <span id="selectionHint" class="selection-hint">点击卡牌，再点击目标格进行移动 / 合成</span>
+      </div>
+
+      <div id="inventoryGrid" class="slot-grid slot-grid--inventory"></div>
+
+      <section class="weapon-book">
+        <h2>流派说明</h2>
+        <div id="weaponBook" class="weapon-book-grid"></div>
+      </section>
+    </aside>
+  </div>
+
+  <section id="upgradeOverlay" class="overlay hidden" aria-hidden="true">
+    <div class="overlay-card">
+      <p class="eyebrow">选择强化</p>
+      <h2>尸潮暂退，立刻强化</h2>
+      <div id="upgradeOptions" class="upgrade-grid"></div>
+    </div>
+  </section>
+
+  <section id="gameOverOverlay" class="overlay hidden" aria-hidden="true">
+    <div class="overlay-card overlay-card--gameover">
+      <p class="eyebrow">本局结束</p>
+      <h2 id="gameOverTitle">荒城失守</h2>
+      <p id="gameOverSummary" class="summary"></p>
+      <button id="overlayRestartButton" class="primary-button">再来一局</button>
+    </div>
+  </section>
+
+  <script src="./game.js"></script>
+</body>
+</html>
