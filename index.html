@@ -92,9 +92,23 @@
           <span>最高波次</span>
           <strong id="bestWaveLabel">1</strong>
         </div>
+        <button id="pauseButton" class="ghost-button hud-action">暂停</button>
       </div>
 
       <canvas id="gameCanvas" width="960" height="640" aria-label="游戏战斗画面"></canvas>
+
+      <div class="control-dock">
+        <div class="joystick-panel">
+          <p class="control-title">移动摇杆</p>
+          <div id="joystickBase" class="joystick-base">
+            <div id="joystickThumb" class="joystick-thumb"></div>
+          </div>
+        </div>
+        <div class="control-tips">
+          <p>移动端可拖动左侧摇杆，PC 端仍支持 `WASD / 方向键`。</p>
+          <p>`Esc` 可暂停，局外研究和补给箱会保留本地存档。</p>
+        </div>
+      </div>
 
       <div class="battle-footer">
         <div class="legend">
@@ -135,6 +149,47 @@
       <h2 id="gameOverTitle">荒城失守</h2>
       <p id="gameOverSummary" class="summary"></p>
       <button id="overlayRestartButton" class="primary-button">再来一局</button>
+    </div>
+  </section>
+
+  <section id="startOverlay" class="overlay" aria-hidden="false">
+    <div class="overlay-card overlay-card--start">
+      <p class="eyebrow">Abyss Survival Build</p>
+      <h2>荒城幻影</h2>
+      <p class="summary">
+        在尸潮包围的废土里，用背包管理与自动火力构建自己的流派。每 5 波会出现畸变领主，结算后可用晶核做局外研究与补给升级。
+      </p>
+      <div class="start-points">
+        <span>自动射击</span>
+        <span>拖拽合成</span>
+        <span>Boss 波次</span>
+        <span>局外成长</span>
+      </div>
+      <div class="overlay-actions">
+        <button id="startButton" class="primary-button">开始作战</button>
+        <button id="startPracticeButton" class="ghost-button">重置并开始</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="pauseOverlay" class="overlay hidden" aria-hidden="true">
+    <div class="overlay-card overlay-card--pause">
+      <p class="eyebrow">暂停中</p>
+      <h2>战术面板</h2>
+      <div class="settings-grid">
+        <button id="toggleGuidesButton" class="upgrade-button" type="button">
+          <strong>锁线指引</strong>
+          <span id="guidesStatus">开启</span>
+        </button>
+        <button id="toggleEffectsButton" class="upgrade-button" type="button">
+          <strong>特效表现</strong>
+          <span id="effectsStatus">完整</span>
+        </button>
+      </div>
+      <div class="overlay-actions">
+        <button id="resumeButton" class="primary-button">继续战斗</button>
+        <button id="pauseRestartButton" class="ghost-button">重新开始</button>
+      </div>
     </div>
   </section>
 

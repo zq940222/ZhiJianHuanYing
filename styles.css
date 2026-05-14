@@ -181,6 +181,10 @@ body {
   box-shadow: 0 12px 30px rgba(67, 214, 255, 0.22);
 }
 
+.hud-action {
+  white-space: nowrap;
+}
+
 .battle-stage {
   border-radius: 34px;
   padding: 18px;
@@ -218,6 +222,77 @@ body {
 
 .battle-footer {
   margin-top: 14px;
+}
+
+.control-dock {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 14px;
+  align-items: center;
+}
+
+.control-title {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.joystick-panel,
+.control-tips {
+  border: 1px solid var(--line);
+  background: var(--panel-strong);
+  border-radius: 20px;
+  padding: 14px;
+}
+
+.joystick-panel {
+  width: 180px;
+  flex: 0 0 auto;
+}
+
+.joystick-base {
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  position: relative;
+  margin: 0 auto;
+  border: 1px solid rgba(138, 247, 215, 0.16);
+  background:
+    radial-gradient(circle at center, rgba(67, 214, 255, 0.08), rgba(67, 214, 255, 0.02) 60%),
+    rgba(255, 255, 255, 0.02);
+  touch-action: none;
+}
+
+.joystick-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  position: absolute;
+  left: 40px;
+  top: 40px;
+  background: linear-gradient(135deg, rgba(138, 247, 215, 0.86), rgba(67, 214, 255, 0.96));
+  box-shadow: 0 10px 22px rgba(67, 214, 255, 0.24);
+}
+
+.control-tips {
+  flex: 1;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.control-tips p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.control-tips p + p {
+  margin-top: 10px;
 }
 
 .legend {
@@ -405,9 +480,46 @@ body {
   box-shadow: var(--shadow);
 }
 
+.overlay-card--start,
+.overlay-card--pause {
+  width: min(620px, 100%);
+}
+
 .overlay-card--gameover {
   width: min(480px, 100%);
   text-align: center;
+}
+
+.overlay-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+
+.start-points,
+.settings-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.start-points {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 18px;
+}
+
+.start-points span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 12px 14px;
+  text-align: center;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.settings-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 18px;
 }
 
 .upgrade-grid {
@@ -455,6 +567,18 @@ body {
   .stat-grid,
   .upgrade-grid {
     grid-template-columns: 1fr;
+  }
+
+  .control-dock,
+  .overlay-actions,
+  .settings-grid,
+  .start-points {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .joystick-panel {
+    width: 100%;
   }
 
   .slot-grid--inventory {

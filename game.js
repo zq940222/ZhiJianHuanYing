@@ -18,11 +18,24 @@ const ui = {
   selectionHint: document.getElementById("selectionHint"),
   supplyButton: document.getElementById("supplyButton"),
   supplyHint: document.getElementById("supplyHint"),
+  pauseButton: document.getElementById("pauseButton"),
+  joystickBase: document.getElementById("joystickBase"),
+  joystickThumb: document.getElementById("joystickThumb"),
   upgradeOverlay: document.getElementById("upgradeOverlay"),
   upgradeOptions: document.getElementById("upgradeOptions"),
   gameOverOverlay: document.getElementById("gameOverOverlay"),
   gameOverTitle: document.getElementById("gameOverTitle"),
   gameOverSummary: document.getElementById("gameOverSummary"),
+  startOverlay: document.getElementById("startOverlay"),
+  startButton: document.getElementById("startButton"),
+  startPracticeButton: document.getElementById("startPracticeButton"),
+  pauseOverlay: document.getElementById("pauseOverlay"),
+  resumeButton: document.getElementById("resumeButton"),
+  pauseRestartButton: document.getElementById("pauseRestartButton"),
+  toggleGuidesButton: document.getElementById("toggleGuidesButton"),
+  toggleEffectsButton: document.getElementById("toggleEffectsButton"),
+  guidesStatus: document.getElementById("guidesStatus"),
+  effectsStatus: document.getElementById("effectsStatus"),
   restartButton: document.getElementById("restartButton"),
   overlayRestartButton: document.getElementById("overlayRestartButton"),
   sortButton: document.getElementById("sortButton"),
@@ -279,9 +292,21 @@ function saveProfile() {
 
 const state = {
   keys: {},
+  sessionStarted: false,
+  paused: false,
   pendingUpgrade: false,
   selectedSlot: null,
   pointerMove: null,
+  joystick: {
+    active: false,
+    pointerId: null,
+    x: 0,
+    y: 0,
+  },
+  settings: {
+    showGuides: true,
+    showEffects: true,
+  },
   lastTime: 0,
   bestWave: Number(localStorage.getItem(STORAGE_BEST_WAVE) || 1),
   profile: loadProfile(),
@@ -435,16 +460,76 @@ function applyLoadoutSynergy(run) {
 function resetRun() {
   state.run = createInitialRun();
   state.pendingUpgrade = false;
+  state.paused = false;
   state.selectedSlot = null;
   state.pointerMove = null;
+  resetJoystick();
   state.lastTime = 0;
   ui.upgradeOverlay.classList.add("hidden");
   ui.gameOverOverlay.classList.add("hidden");
+  ui.pauseOverlay.classList.add("hidden");
   ui.selectionHint.textContent = "点击卡牌，再点击目标格进行移动 / 合成";
   renderInventory();
   renderWeaponBook();
   renderResearch();
+  refreshSettingsUI();
   updateHud();
+}
+
+function startSession(reset = false) {
+  if (reset || !state.run) {
+    resetRun();
+  }
+  state.sessionStarted = true;
+  state.paused = false;
+  ui.startOverlay.classList.add("hidden");
+  ui.pauseOverlay.classList.add("hidden");
+}
+
+function setPaused(nextPaused) {
+  if (!state.sessionStarted || !state.run.active || state.pendingUpgrade) {
+    return;
+  }
+  state.paused = nextPaused;
+  ui.pauseOverlay.classList.toggle("hidden", !nextPaused);
+}
+
+function togglePause() {
+  setPaused(!state.paused);
+}
+
+function refreshSettingsUI() {
+  ui.guidesStatus.textContent = state.settings.showGuides ? "开启" : "关闭";
+  ui.effectsStatus.textContent = state.settings.showEffects ? "完整" : "简化";
+}
+
+function resetJoystick() {
+  state.joystick.active = false;
+  state.joystick.pointerId = null;
+  state.joystick.x = 0;
+  state.joystick.y = 0;
+  if (ui.joystickThumb) {
+    ui.joystickThumb.style.transform = "translate(0px, 0px)";
+  }
+}
+
+function updateJoystickFromEvent(event) {
+  const rect = ui.joystickBase.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const dx = event.clientX - centerX;
+  const dy = event.clientY - centerY;
+  const maxRadius = rect.width * 0.28;
+  const length = Math.hypot(dx, dy) || 1;
+  const clamped = Math.min(length, maxRadius);
+  const normX = (dx / length) * clamped;
+  const normY = (dy / length) * clamped;
+
+  state.joystick.active = true;
+  state.joystick.pointerId = event.pointerId;
+  state.joystick.x = normX / maxRadius;
+  state.joystick.y = normY / maxRadius;
+  ui.joystickThumb.style.transform = `translate(${normX}px, ${normY}px)`;
 }
 
 function rarityClass(card) {
@@ -909,6 +994,11 @@ function updatePlayer(dt) {
   let dx = 0;
   let dy = 0;
 
+  if (state.joystick.active) {
+    dx += state.joystick.x;
+    dy += state.joystick.y;
+  }
+
   if (state.pointerMove) {
     dx = state.pointerMove.x - player.x;
     dy = state.pointerMove.y - player.y;
@@ -1116,6 +1206,7 @@ function updateHud() {
   ui.killLabel.textContent = state.run.meta.kills;
   ui.bestWaveLabel.textContent = state.bestWave;
   ui.supplyButton.disabled = state.profile.alloy < SUPPLY_COST;
+  ui.pauseButton.textContent = state.paused ? "继续" : "暂停";
 }
 
 function endRun(win) {
@@ -1134,6 +1225,7 @@ function endRun(win) {
   ui.gameOverSummary.textContent =
     `到达第 ${state.run.progression.wave} 波，累计击杀 ${state.run.meta.kills}，击败 Boss ${state.run.meta.bossKills}，本局获得 ${reward} 晶核。`;
   ui.gameOverOverlay.classList.remove("hidden");
+  state.paused = false;
 }
 
 function unlockOrUpgradeWeapon() {
@@ -1242,6 +1334,9 @@ function drawDrops() {
 }
 
 function drawBursts() {
+  if (!state.settings.showEffects) {
+    return;
+  }
   state.run.bursts.forEach((burst) => {
     ctx.save();
     ctx.globalAlpha = Math.max(0, burst.ttl / 0.18);
@@ -1267,6 +1362,9 @@ function drawBursts() {
 }
 
 function drawGuides() {
+  if (!state.settings.showGuides) {
+    return;
+  }
   const target = getClosestEnemy(240);
   if (!target) {
     return;
@@ -1312,7 +1410,7 @@ function gameLoop(timestamp) {
   const dt = Math.min((timestamp - state.lastTime) / 1000, 0.033);
   state.lastTime = timestamp;
 
-  if (state.run.active && !state.pendingUpgrade) {
+  if (state.sessionStarted && state.run.active && !state.pendingUpgrade && !state.paused) {
     updatePlayer(dt);
     updateWave(dt);
     fireWeapons(dt);
@@ -1329,6 +1427,10 @@ function gameLoop(timestamp) {
 
 window.addEventListener("keydown", (event) => {
   state.keys[event.key] = true;
+  if (event.key === "Escape") {
+    event.preventDefault();
+    togglePause();
+  }
 });
 
 window.addEventListener("keyup", (event) => {
@@ -1361,10 +1463,53 @@ canvas.addEventListener("pointerleave", () => {
   state.pointerMove = null;
 });
 
+ui.joystickBase.addEventListener("pointerdown", (event) => {
+  event.preventDefault();
+  updateJoystickFromEvent(event);
+});
+
+ui.joystickBase.addEventListener("pointermove", (event) => {
+  if (state.joystick.pointerId === event.pointerId) {
+    updateJoystickFromEvent(event);
+  }
+});
+
+ui.joystickBase.addEventListener("pointerup", (event) => {
+  if (state.joystick.pointerId === event.pointerId) {
+    resetJoystick();
+  }
+});
+
+ui.joystickBase.addEventListener("pointercancel", () => {
+  resetJoystick();
+});
+
 ui.restartButton.addEventListener("click", resetRun);
 ui.overlayRestartButton.addEventListener("click", resetRun);
 ui.sortButton.addEventListener("click", sortInventory);
 ui.supplyButton.addEventListener("click", openSupplyBox);
+ui.pauseButton.addEventListener("click", () => {
+  if (!state.sessionStarted) {
+    startSession(false);
+    return;
+  }
+  togglePause();
+});
+ui.startButton.addEventListener("click", () => startSession(false));
+ui.startPracticeButton.addEventListener("click", () => startSession(true));
+ui.resumeButton.addEventListener("click", () => setPaused(false));
+ui.pauseRestartButton.addEventListener("click", () => {
+  resetRun();
+  setPaused(false);
+});
+ui.toggleGuidesButton.addEventListener("click", () => {
+  state.settings.showGuides = !state.settings.showGuides;
+  refreshSettingsUI();
+});
+ui.toggleEffectsButton.addEventListener("click", () => {
+  state.settings.showEffects = !state.settings.showEffects;
+  refreshSettingsUI();
+});
 
 resetRun();
 requestAnimationFrame(gameLoop);
